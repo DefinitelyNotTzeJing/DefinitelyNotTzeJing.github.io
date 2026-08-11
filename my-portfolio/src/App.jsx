@@ -1098,7 +1098,7 @@ export default function Portfolio() {
                   className="display mt-1 text-sm font-semibold"
                   style={{ color: COLORS.ink }}
                 >
-                  QA + Full Stack
+                  Backend Developer / Full Stack Developer
                 </p>
               </div>
 
