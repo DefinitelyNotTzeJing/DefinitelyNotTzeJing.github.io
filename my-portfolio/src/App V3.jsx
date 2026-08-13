@@ -12,27 +12,25 @@ import {
   Sparkles,
 } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import "./App.css";
 
 const FONT_IMPORT = `
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 `;
 
 const COLORS = {
-  bg: "#05090B",
-  bgAlt: "#091014",
-  surface: "rgba(10,18,22,0.72)",
-  dark: "#030709",
-  darkSoft: "#0A1216",
-  ink: "#ECFFFB",
-  inkSoft: "#AEC3BE",
-  line: "rgba(112, 236, 216, 0.22)",
-  teal: "#37E6C4",
-  tealBright: "#62F5DA",
-  tealSoft: "rgba(55,230,196,0.10)",
-  lime: "#B8FF7A",
-  rust: "#FF7A64",
-  blue: "#5FA8FF",
+  bg: "#07100F",
+  bgAlt: "#0C1816",
+  surface: "#10211E",
+  dark: "#050A09",
+  darkSoft: "#0B1513",
+  ink: "#E8F1EE",
+  inkSoft: "#91A49D",
+  line: "#1B3430",
+  teal: "#35C7AE",
+  tealBright: "#62F4D3",
+  tealSoft: "#12352F",
+  lime: "#C7F36B",
+  rust: "#FF775E",
 };
 
 /* -------------------------------------------------- */
@@ -43,7 +41,7 @@ function StatusBadge({ children, tone = "teal" }) {
   const styles =
     tone === "rust"
       ? {
-          bg: "rgba(255,122,100,0.10)",
+          bg: "#F4DDD7",
           fg: COLORS.rust,
         }
       : {
@@ -172,15 +170,58 @@ function Reveal({ children, delay = 0, className = "" }) {
         transform: visible
           ? "translateY(0)"
           : "translateY(24px)",
-        filter: visible ? "blur(0px)" : "blur(8px)",
         transition: `
-          opacity 0.75s ease ${delay}ms,
-          transform 0.75s cubic-bezier(.22,1,.36,1) ${delay}ms,
-          filter 0.75s ease ${delay}ms
+          opacity 0.7s ease ${delay}ms,
+          transform 0.7s cubic-bezier(.22,1,.36,1) ${delay}ms
         `,
       }}
     >
       {children}
+    </div>
+  );
+}
+
+function useMouseGlow() {
+  const [position, setPosition] = useState({ x: 50, y: 20 });
+
+  useEffect(() => {
+    const onMove = (event) => {
+      setPosition({
+        x: (event.clientX / window.innerWidth) * 100,
+        y: (event.clientY / window.innerHeight) * 100,
+      });
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, []);
+
+  return position;
+}
+
+function ParticleField() {
+  const particles = Array.from({ length: 28 }, (_, index) => ({
+    id: index,
+    left: (index * 37) % 101,
+    top: (index * 61) % 101,
+    delay: (index % 7) * 0.8,
+    duration: 5 + (index % 5),
+  }));
+
+  return (
+    <div className="particle-field" aria-hidden="true">
+      {particles.map((particle) => (
+        <span
+          key={particle.id}
+          className="particle"
+          style={{
+            left: `${particle.left}%`,
+            top: `${particle.top}%`,
+            animationDelay: `${particle.delay}s`,
+            animationDuration: `${particle.duration}s`,
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -192,24 +233,12 @@ function Reveal({ children, delay = 0, className = "" }) {
 function BackgroundGrid() {
   return (
     <>
-      <div className="background-base" />
       <div className="background-grid" />
-      <div className="perspective-grid" />
+      <div className="background-scanlines" />
       <div className="background-glow background-glow-one" />
       <div className="background-glow background-glow-two" />
-      <div className="background-glow background-glow-three" />
-      <div className="background-orbit orbit-one" />
-      <div className="background-orbit orbit-two" />
-      <div className="background-constellation constellation-one" />
-      <div className="background-constellation constellation-two" />
-      <div className="scanline-overlay" />
-      <div className="noise-overlay" />
-      <div className="ambient-particle particle-1" />
-      <div className="ambient-particle particle-2" />
-      <div className="ambient-particle particle-3" />
-      <div className="ambient-particle particle-4" />
-      <div className="ambient-particle particle-5" />
-      <div className="ambient-particle particle-6" />
+      <ParticleField />
+      <div className="cursor-glow" />
     </>
   );
 }
@@ -253,7 +282,7 @@ function LandmarkMesh({ size = 380, seed = 11 }) {
 
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[430px]">
-      <div className="absolute inset-8 rounded-full border border-dashed border-[rgba(98,245,218,.22)]" />
+      <div className="absolute inset-8 rounded-full border border-dashed border-[#C8D1CB]" />
 
       <svg
         viewBox={`0 0 ${size} ${size}`}
@@ -538,6 +567,7 @@ const SKILLS = {
 export default function Portfolio() {
   const confidence = useLiveConfidence();
   const scrollProgress = useScrollProgress();
+  const mouseGlow = useMouseGlow();
 
   const [showTop, setShowTop] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
@@ -555,16 +585,6 @@ export default function Portfolio() {
       window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    const onPointerMove = (event) => {
-      document.documentElement.style.setProperty("--mouse-x", `${event.clientX}px`);
-      document.documentElement.style.setProperty("--mouse-y", `${event.clientY}px`);
-    };
-
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onPointerMove);
-  }, []);
-
   return (
     <div
       id="top"
@@ -572,6 +592,8 @@ export default function Portfolio() {
       style={{
         background: COLORS.bg,
         color: COLORS.ink,
+        "--mouse-x": `${mouseGlow.x}%`,
+        "--mouse-y": `${mouseGlow.y}%`,
       }}
     >
       <style>{`
@@ -588,6 +610,7 @@ export default function Portfolio() {
         body {
           margin: 0;
           background: ${COLORS.bg};
+          color-scheme: dark;
         }
 
         .mono {
@@ -606,277 +629,8 @@ export default function Portfolio() {
           font-family: "Manrope", sans-serif;
         }
 
-        :root {
-          --mouse-x: 50vw;
-          --mouse-y: 35vh;
-        }
-
-        body {
-          overflow-x: hidden;
-        }
-
-        .portfolio {
-          position: relative;
-          isolation: isolate;
-          background:
-            radial-gradient(circle at 50% -10%, rgba(55,230,196,0.08), transparent 32%),
-            linear-gradient(180deg, #061014 0%, #05090B 45%, #030607 100%);
-        }
-
-        .background-base {
-          position: fixed;
-          inset: 0;
-          z-index: -8;
-          background:
-            radial-gradient(circle at 15% 10%, rgba(95,168,255,0.08), transparent 22%),
-            radial-gradient(circle at 85% 22%, rgba(55,230,196,0.10), transparent 24%),
-            radial-gradient(circle at 50% 88%, rgba(184,255,122,0.045), transparent 28%),
-            #05090B;
-          pointer-events: none;
-        }
-
-        .mouse-glow {
-          position: fixed;
-          inset: 0;
-          z-index: 0;
-          pointer-events: none;
-          background: radial-gradient(420px circle at var(--mouse-x) var(--mouse-y), rgba(55,230,196,0.075), transparent 65%);
-          mix-blend-mode: screen;
-        }
-
-        .perspective-grid {
-          position: fixed;
-          left: -20vw;
-          right: -20vw;
-          bottom: -34vh;
-          height: 74vh;
-          z-index: -6;
-          opacity: 0.3;
-          pointer-events: none;
-          background-image:
-            linear-gradient(rgba(55,230,196,0.11) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(55,230,196,0.11) 1px, transparent 1px);
-          background-size: 54px 54px;
-          transform: perspective(520px) rotateX(68deg);
-          transform-origin: center bottom;
-          mask-image: linear-gradient(to top, black 0%, rgba(0,0,0,.85) 35%, transparent 88%);
-          animation: gridDrift 18s linear infinite;
-        }
-
-        @keyframes gridDrift {
-          to { background-position: 0 54px, 54px 0; }
-        }
-
-        .background-orbit {
-          position: fixed;
-          z-index: -5;
-          border: 1px solid rgba(55,230,196,0.09);
-          border-radius: 50%;
-          pointer-events: none;
-          box-shadow: 0 0 80px rgba(55,230,196,0.03), inset 0 0 80px rgba(95,168,255,0.02);
-        }
-
-        .orbit-one {
-          width: 56vw;
-          aspect-ratio: 1;
-          right: -23vw;
-          top: 9vh;
-          animation: orbitFloat 18s ease-in-out infinite alternate;
-        }
-
-        .orbit-two {
-          width: 34vw;
-          aspect-ratio: 1;
-          left: -18vw;
-          top: 48vh;
-          animation: orbitFloat 22s ease-in-out infinite alternate-reverse;
-        }
-
-        @keyframes orbitFloat {
-          from { transform: translateY(-10px) scale(1); }
-          to { transform: translateY(24px) scale(1.04); }
-        }
-
-        .background-constellation {
-          position: fixed;
-          z-index: -4;
-          pointer-events: none;
-          width: 320px;
-          height: 220px;
-          opacity: 0.25;
-          background:
-            radial-gradient(circle at 10% 30%, rgba(98,245,218,.9) 0 1px, transparent 2px),
-            radial-gradient(circle at 36% 12%, rgba(98,245,218,.65) 0 1px, transparent 2px),
-            radial-gradient(circle at 55% 52%, rgba(95,168,255,.65) 0 1px, transparent 2px),
-            radial-gradient(circle at 84% 26%, rgba(98,245,218,.8) 0 1px, transparent 2px),
-            linear-gradient(28deg, transparent 48%, rgba(98,245,218,.09) 49%, rgba(98,245,218,.09) 50%, transparent 51%);
-          filter: drop-shadow(0 0 10px rgba(98,245,218,.2));
-        }
-
-        .constellation-one { right: 4vw; top: 18vh; transform: rotate(-8deg); }
-        .constellation-two { left: 3vw; top: 68vh; transform: rotate(14deg) scale(.8); }
-
-        .scanline-overlay {
-          position: fixed;
-          inset: 0;
-          z-index: 40;
-          pointer-events: none;
-          opacity: .17;
-          background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(255,255,255,.018) 4px);
-          mix-blend-mode: soft-light;
-        }
-
-        .noise-overlay {
-          position: fixed;
-          inset: -50%;
-          z-index: 39;
-          pointer-events: none;
-          opacity: .025;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-          animation: noiseShift .35s steps(2) infinite;
-        }
-
-        @keyframes noiseShift {
-          0% { transform: translate3d(0,0,0); }
-          50% { transform: translate3d(2%, -1%, 0); }
-          100% { transform: translate3d(-1%, 2%, 0); }
-        }
-
-        .ambient-particle {
-          position: fixed;
-          z-index: -3;
-          width: 4px;
-          height: 4px;
-          border-radius: 999px;
-          background: ${COLORS.tealBright};
-          box-shadow: 0 0 14px ${COLORS.tealBright};
-          opacity: .55;
-          pointer-events: none;
-          animation: particleFloat 9s ease-in-out infinite;
-        }
-
-        .particle-1 { left: 8%; top: 21%; animation-delay: -1s; }
-        .particle-2 { left: 19%; top: 72%; animation-delay: -4s; }
-        .particle-3 { right: 12%; top: 34%; animation-delay: -6s; }
-        .particle-4 { right: 23%; top: 76%; animation-delay: -2s; }
-        .particle-5 { left: 52%; top: 12%; animation-delay: -7s; }
-        .particle-6 { left: 66%; top: 58%; animation-delay: -3s; }
-
-        @keyframes particleFloat {
-          0%, 100% { transform: translate3d(0,0,0) scale(.8); opacity: .2; }
-          45% { transform: translate3d(14px,-28px,0) scale(1.2); opacity: .75; }
-          70% { transform: translate3d(-10px,-42px,0) scale(.9); opacity: .4; }
-        }
-
-        .glass-card,
-        .project-card {
-          background: linear-gradient(180deg, rgba(11,23,27,.78), rgba(6,12,15,.67));
-          backdrop-filter: blur(18px) saturate(120%);
-          -webkit-backdrop-filter: blur(18px) saturate(120%);
-          border-color: rgba(98,245,218,.16) !important;
-          box-shadow: 0 18px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.035);
-        }
-
-        .hud-panel {
-          position: relative;
-        }
-
-        .hud-panel::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          border-radius: inherit;
-          background: linear-gradient(110deg, transparent 10%, rgba(98,245,218,.04) 35%, transparent 60%);
-          transform: translateX(-120%);
-          transition: transform 1s cubic-bezier(.22,1,.36,1);
-        }
-
-        .hud-panel:hover::after { transform: translateX(120%); }
-
-        .hero-stage::before {
-          content: "";
-          position: absolute;
-          width: 700px;
-          height: 700px;
-          right: -180px;
-          top: -120px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(55,230,196,.13), rgba(95,168,255,.04) 35%, transparent 68%);
-          filter: blur(8px);
-          pointer-events: none;
-          z-index: -1;
-        }
-
-        .gradient-text {
-          background: linear-gradient(90deg, #ECFFFB 0%, ${COLORS.tealBright} 38%, ${COLORS.lime} 72%, #ECFFFB 100%);
-          background-size: 220% auto;
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          animation: gradientFlow 8s linear infinite;
-          text-shadow: 0 0 45px rgba(55,230,196,.09);
-        }
-
-        @keyframes gradientFlow { to { background-position: 220% center; } }
-
-        .hero-copy {
-          border-color: rgba(98,245,218,.45) !important;
-          box-shadow: -10px 0 30px -22px rgba(98,245,218,.65);
-        }
-
-        .hero-visual-core {
-          position: relative;
-          isolation: isolate;
-        }
-
-        .hero-halo {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-          border-radius: 50%;
-          border: 1px solid rgba(98,245,218,.14);
-          pointer-events: none;
-          z-index: -1;
-        }
-
-        .hero-halo-one { width: 82%; aspect-ratio: 1; animation: haloPulse 5s ease-in-out infinite; }
-        .hero-halo-two { width: 64%; aspect-ratio: 1; border-style: dashed; animation: haloSpin 26s linear infinite; }
-
-        @keyframes haloPulse { 50% { transform: translate(-50%,-50%) scale(1.06); opacity: .55; } }
-        @keyframes haloSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
-
-        .scan-beam {
-          position: absolute;
-          left: 10%;
-          right: 10%;
-          height: 1px;
-          top: 16%;
-          background: linear-gradient(90deg, transparent, rgba(98,245,218,.9), transparent);
-          box-shadow: 0 0 18px rgba(98,245,218,.5);
-          animation: scanBeam 4.2s ease-in-out infinite;
-          z-index: 3;
-          pointer-events: none;
-        }
-
-        @keyframes scanBeam {
-          0%,100% { transform: translateY(0); opacity: 0; }
-          15% { opacity: .8; }
-          50% { transform: translateY(220px); opacity: .95; }
-          85% { opacity: .4; }
-        }
-
-        .contact-panel {
-          background:
-            radial-gradient(circle at 82% 20%, rgba(55,230,196,.12), transparent 28%),
-            linear-gradient(160deg, rgba(7,16,19,.96), rgba(3,8,10,.93)) !important;
-          border: 1px solid rgba(98,245,218,.18);
-          box-shadow: 0 24px 90px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
-        }
-
         ::selection {
-          background: ${COLORS.tealBright};
+          background: linear-gradient(135deg, ${COLORS.tealBright}, ${COLORS.teal});
           color: ${COLORS.dark};
         }
 
@@ -892,21 +646,21 @@ export default function Portfolio() {
           inset: 0;
           z-index: 0;
           pointer-events: none;
-          opacity: 0.28;
+          opacity: 0.72;
 
           background-image:
             linear-gradient(
-              rgba(98, 245, 218, 0.07) 1px,
+              rgba(53, 199, 174, 0.075) 1px,
               transparent 1px
             ),
             linear-gradient(
               90deg,
-              rgba(98, 245, 218, 0.07) 1px,
+              rgba(53, 199, 174, 0.075) 1px,
               transparent 1px
             );
 
-          background-size: 56px 56px;
-          animation: backgroundGridMove 22s linear infinite;
+          background-size: 52px 52px;
+          animation: gridDrift 24s linear infinite;
 
           mask-image: linear-gradient(
             to bottom,
@@ -927,27 +681,74 @@ export default function Portfolio() {
         }
 
         .background-glow-one {
-          top: -260px;
-          right: -180px;
+          top: -300px;
+          right: -200px;
           background: ${COLORS.teal};
         }
 
         .background-glow-two {
-          top: 38%;
-          left: -340px;
-          background: ${COLORS.blue};
-          opacity: 0.10;
-        }
-
-        .background-glow-three {
-          bottom: -260px;
-          right: 16%;
+          top: 40%;
+          left: -350px;
           background: ${COLORS.lime};
-          opacity: 0.05;
+          opacity: 0.08;
         }
 
-        @keyframes backgroundGridMove {
-          to { background-position: 56px 56px, 56px 56px; }
+        .background-scanlines {
+          position: fixed;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          opacity: 0.12;
+          background: repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 4px,
+            rgba(255,255,255,0.018) 5px
+          );
+        }
+
+        .cursor-glow {
+          position: fixed;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background: radial-gradient(
+            circle 280px at var(--mouse-x) var(--mouse-y),
+            rgba(53,199,174,0.085),
+            transparent 70%
+          );
+          transition: background 0.18s ease-out;
+        }
+
+        .particle-field {
+          position: fixed;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          overflow: hidden;
+        }
+
+        .particle {
+          position: absolute;
+          width: 2px;
+          height: 2px;
+          border-radius: 999px;
+          background: ${COLORS.tealBright};
+          box-shadow: 0 0 10px rgba(98,244,211,0.8);
+          opacity: 0;
+          animation: particleFloat 7s ease-in-out infinite;
+        }
+
+        @keyframes gridDrift {
+          from { background-position: 0 0, 0 0; }
+          to { background-position: 52px 52px, 52px 52px; }
+        }
+
+        @keyframes particleFloat {
+          0%, 100% { transform: translate3d(0, 20px, 0); opacity: 0; }
+          25% { opacity: 0.45; }
+          70% { opacity: 0.18; }
+          100% { transform: translate3d(20px, -90px, 0); opacity: 0; }
         }
 
         /* Navigation */
@@ -998,10 +799,13 @@ export default function Portfolio() {
         }
 
         .hero-card {
-          background: ${COLORS.dark};
+          background: linear-gradient(145deg, rgba(12,29,26,0.92), rgba(4,10,9,0.96));
           color: white;
           position: relative;
           overflow: hidden;
+          border: 1px solid rgba(98,244,211,0.18);
+          box-shadow: 0 30px 100px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.06);
+          backdrop-filter: blur(18px);
         }
 
         .hero-card::before {
@@ -1009,11 +813,8 @@ export default function Portfolio() {
           position: absolute;
           inset: 0;
           background:
-            linear-gradient(
-              135deg,
-              rgba(34,161,141,0.12),
-              transparent 45%
-            );
+            radial-gradient(circle at 20% 10%, rgba(98,244,211,0.13), transparent 28%),
+            linear-gradient(135deg, rgba(53,199,174,0.12), transparent 45%);
           pointer-events: none;
         }
 
@@ -1032,13 +833,9 @@ export default function Portfolio() {
         .project-card {
           position: relative;
           overflow: hidden;
-          background: linear-gradient(
-            180deg,
-            rgba(11,23,27,0.88),
-            rgba(6,12,15,0.78)
-          );
-          color: ${COLORS.ink};
+          background: linear-gradient(145deg, rgba(15,33,30,0.82), rgba(8,20,18,0.76));
           border: 1px solid ${COLORS.line};
+          backdrop-filter: blur(16px);
           transition:
             transform 0.35s cubic-bezier(.22,1,.36,1),
             border-color 0.25s ease,
@@ -1063,9 +860,11 @@ export default function Portfolio() {
         }
 
         .project-card:hover {
-          transform: translateY(-9px) scale(1.01);
-          border-color: rgba(98,245,218,.52) !important;
-          box-shadow: 0 26px 80px rgba(0,0,0,.44), 0 0 34px rgba(55,230,196,.08);
+          transform: translateY(-7px);
+          border-color: ${COLORS.teal};
+          box-shadow:
+            0 24px 70px rgba(0,0,0,0.34),
+            0 0 30px rgba(53,199,174,0.06);
         }
 
         .project-card:hover::before {
@@ -1092,7 +891,7 @@ export default function Portfolio() {
           font-size: 11px;
           padding: 7px 11px;
           border: 1px solid ${COLORS.line};
-          background: rgba(255,255,255,0.025);
+          background: rgba(10,28,25,0.72);
           transition:
             transform 0.2s ease,
             background 0.2s ease,
@@ -1102,18 +901,57 @@ export default function Portfolio() {
 
         .skill-pill:hover {
           transform: translateY(-2px);
-          background: rgba(55,230,196,0.08);
+          background: rgba(53,199,174,0.12);
           border-color: ${COLORS.teal};
           color: ${COLORS.teal};
+        }
+
+        .portfolio .bg-white {
+          background: linear-gradient(145deg, rgba(14,31,28,0.82), rgba(7,18,16,0.76)) !important;
+          backdrop-filter: blur(16px);
+        }
+
+        .portfolio .shadow-lg,
+        .portfolio .shadow-xl {
+          box-shadow: 0 24px 70px rgba(0,0,0,0.28) !important;
+        }
+
+        .glass-panel {
+          background: rgba(12,29,26,0.66);
+          border: 1px solid rgba(98,244,211,0.14);
+          backdrop-filter: blur(18px);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+
+        .tech-sheen {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .tech-sheen::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -30%;
+          width: 18%;
+          height: 100%;
+          transform: skewX(-18deg);
+          background: linear-gradient(90deg, transparent, rgba(98,244,211,0.08), transparent);
+          animation: sheen 7s ease-in-out infinite;
+          pointer-events: none;
+        }
+
+        @keyframes sheen {
+          0%, 45% { left: -30%; }
+          70%, 100% { left: 125%; }
         }
 
         /* Buttons */
         .primary-button {
           position: relative;
           overflow: hidden;
-          background: ${COLORS.teal};
+          background: linear-gradient(135deg, ${COLORS.tealBright}, ${COLORS.teal});
           color: ${COLORS.dark};
-          font-weight: 700;
           transition:
             transform 0.25s ease,
             box-shadow 0.25s ease;
@@ -1121,7 +959,7 @@ export default function Portfolio() {
 
         .primary-button:hover {
           transform: translateY(-2px);
-          box-shadow: 0 10px 32px rgba(55,230,196,0.24), 0 0 32px rgba(55,230,196,0.08);
+          box-shadow: 0 12px 35px rgba(53,199,174,0.2), 0 0 24px rgba(53,199,174,0.1);
         }
 
         .secondary-button {
@@ -1158,6 +996,7 @@ export default function Portfolio() {
         .mesh-rotate {
           animation: rotateMesh 60s linear infinite;
           transform-origin: 50% 50%;
+          filter: drop-shadow(0 0 7px rgba(53,199,174,0.32));
         }
 
         @keyframes rotateMesh {
@@ -1229,7 +1068,6 @@ export default function Portfolio() {
       `}</style>
 
       <BackgroundGrid />
-      <div className="mouse-glow" />
 
       {/* Scroll progress */}
       <div
@@ -1250,9 +1088,9 @@ export default function Portfolio() {
       {/* -------------------------------------------------- */}
 
       <header
-        className="sticky top-0 z-40 border-b backdrop-blur-2xl"
+        className="sticky top-0 z-40 border-b backdrop-blur-xl"
         style={{
-          background: "rgba(5,9,11,0.72)",
+          background: "rgba(7,16,15,0.72)",
           borderColor: COLORS.line,
         }}
       >
@@ -1308,7 +1146,7 @@ export default function Portfolio() {
       {/* HERO */}
       {/* -------------------------------------------------- */}
 
-      <section className="hero-stage relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-20 md:px-8 md:pb-28 md:pt-28">
+      <section className="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-20 md:px-8 md:pb-28 md:pt-28">
         <div className="grid items-center gap-14 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
             <StatusBadge>
@@ -1326,14 +1164,14 @@ export default function Portfolio() {
               <h1 className="hero-name">
                 Chan
                 <br />
-                <span className="gradient-text">
+                <span style={{ color: COLORS.teal }}>
                   Tze Jing.
                 </span>
               </h1>
             </div>
 
             <div
-              className="hero-copy mt-8 max-w-2xl border-l pl-5"
+              className="mt-8 max-w-2xl border-l-2 pl-5"
               style={{ borderColor: COLORS.teal }}
             >
               <p
@@ -1438,15 +1276,14 @@ export default function Portfolio() {
 
           {/* Hero visual */}
           <div className="relative">
-            <div className="hero-card hud-panel rounded-3xl p-7 md:p-9">
-              <CornerMarks color={COLORS.tealBright} />
+            <div className="hero-card tech-sheen rounded-3xl p-7 md:p-9">
               <div className="relative z-10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#B7D86A]" />
                     <span
                       className="mono text-[9px] tracking-[0.2em]"
-                      style={{ color: "#9DB7B1" }}
+                      style={{ color: "#A8B5B1" }}
                     >
                       SYSTEM ONLINE
                     </span>
@@ -1454,16 +1291,13 @@ export default function Portfolio() {
 
                   <span
                     className="mono text-[9px]"
-                    style={{ color: "#65837D" }}
+                    style={{ color: "#65716D" }}
                   >
                     01 / 04
                   </span>
                 </div>
 
-                <div className="hero-visual-core mt-5">
-                  <div className="hero-halo hero-halo-one" />
-                  <div className="hero-halo hero-halo-two" />
-                  <div className="scan-beam" />
+                <div className="mt-5">
                   <LandmarkMesh />
                 </div>
 
@@ -1477,7 +1311,7 @@ export default function Portfolio() {
                   >
                     <p
                       className="mono text-[9px] uppercase tracking-widest"
-                      style={{ color: "#6E8F88" }}
+                      style={{ color: "#73807B" }}
                     >
                       Match confidence
                     </p>
@@ -1499,7 +1333,7 @@ export default function Portfolio() {
                   >
                     <p
                       className="mono text-[9px] uppercase tracking-widest"
-                      style={{ color: "#6E8F88" }}
+                      style={{ color: "#73807B" }}
                     >
                       FAR
                     </p>
@@ -1516,7 +1350,7 @@ export default function Portfolio() {
             </div>
 
             <div
-              className="glass-card absolute -bottom-5 -left-5 hidden rounded-2xl border p-4 shadow-xl md:block"
+              className="absolute -bottom-5 -left-5 hidden rounded-2xl border bg-white p-4 shadow-xl md:block"
               style={{ borderColor: COLORS.line }}
             >
               <div className="flex items-center gap-3">
@@ -1606,7 +1440,7 @@ export default function Portfolio() {
               <div className="timeline-dot" />
 
               <div
-                className="glass-card hud-panel rounded-2xl border p-6 md:p-9"
+                className="tech-sheen rounded-2xl border bg-white p-6 md:p-9"
                 style={{ borderColor: COLORS.line }}
               >
                 <div className="flex flex-col justify-between gap-5 md:flex-row">
@@ -1645,7 +1479,7 @@ export default function Portfolio() {
                   <div
                     className="flex h-fit items-center gap-2 rounded-full px-3 py-2"
                     style={{
-                      background: "rgba(8,16,19,0.68)",
+                      background: COLORS.bgAlt,
                       color: COLORS.inkSoft,
                     }}
                   >
@@ -1667,7 +1501,7 @@ export default function Portfolio() {
                     <div
                       key={index}
                       className="flex gap-4 rounded-xl p-4"
-                      style={{ background: "rgba(255,255,255,0.025)" }}
+                      style={{ background: COLORS.bg }}
                     >
                       <span
                         className="mono text-[10px] font-medium"
@@ -1712,7 +1546,7 @@ export default function Portfolio() {
               delay={index * 70}
             >
               <article
-                className={`project-card h-full rounded-2xl p-6 md:p-7 ${
+                className={`project-card tech-sheen h-full rounded-2xl p-6 md:p-7 ${
                   index === 0 ? "md:col-span-2" : ""
                 }`}
                 onMouseEnter={() =>
@@ -1773,12 +1607,12 @@ export default function Portfolio() {
                           className="rounded-xl p-4"
                           style={{
                             background: COLORS.dark,
-                            color: COLORS.ink,
+                            color: "white",
                           }}
                         >
                           <p
                             className="mono text-[8px] uppercase tracking-widest"
-                            style={{ color: "#76928C" }}
+                            style={{ color: "#7C8A85" }}
                           >
                             {metric.label}
                           </p>
@@ -1882,7 +1716,7 @@ export default function Portfolio() {
                 delay={index * 80}
               >
                 <div
-                  className="glass-card hud-panel group rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 md:p-7"
+                  className="group tech-sheen rounded-2xl border bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:p-7"
                   style={{ borderColor: COLORS.line }}
                 >
                   <div className="mb-6 flex items-center justify-between">
@@ -1942,7 +1776,7 @@ export default function Portfolio() {
             className="mt-6 rounded-2xl border p-6 md:p-7"
             style={{
               borderColor: COLORS.line,
-              background: "rgba(8,16,19,0.68)",
+              background: COLORS.bgAlt,
             }}
           >
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
@@ -1989,21 +1823,20 @@ export default function Portfolio() {
         className="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-24 md:px-8 md:pb-32"
       >
         <div
-          className="contact-panel hud-panel relative overflow-hidden rounded-3xl p-8 md:p-14"
+          className="relative overflow-hidden rounded-3xl p-8 md:p-14"
           style={{
             background: COLORS.dark,
-            color: COLORS.ink,
+            color: "white",
           }}
         >
-          <CornerMarks color={COLORS.tealBright} />
           <div
             className="absolute -right-20 -top-20 h-72 w-72 rounded-full border"
-            style={{ borderColor: "rgba(98,245,218,.14)" }}
+            style={{ borderColor: "#2D3B37" }}
           />
 
           <div
             className="absolute -bottom-32 right-24 h-80 w-80 rounded-full border"
-            style={{ borderColor: "rgba(95,168,255,.10)" }}
+            style={{ borderColor: "#24312E" }}
           />
 
           <div className="relative z-10 grid gap-12 md:grid-cols-[1fr_auto] md:items-end">
@@ -2053,11 +1886,11 @@ export default function Portfolio() {
               <a
                 href="tel:+60166363688"
                 className="group flex items-center gap-3 text-sm"
-                style={{ color: "#D7F7F0" }}
+                style={{ color: "#DCE2DF" }}
               >
                 <span
                   className="rounded-full border p-2 transition-colors group-hover:border-[#B7D86A]"
-                  style={{ borderColor: "rgba(98,245,218,.18)" }}
+                  style={{ borderColor: "#394742" }}
                 >
                   <Phone size={14} />
                 </span>
@@ -2070,11 +1903,11 @@ export default function Portfolio() {
                 target="_blank"
                 rel="noreferrer"
                 className="group flex items-center gap-3 text-sm"
-                style={{ color: "#D7F7F0" }}
+                style={{ color: "#DCE2DF" }}
               >
                 <span
                   className="rounded-full border p-2 transition-colors group-hover:border-[#B7D86A]"
-                  style={{ borderColor: "rgba(98,245,218,.18)" }}
+                  style={{ borderColor: "#394742" }}
                 >
                   <FaGithub size={14} />
                 </span>
@@ -2087,11 +1920,11 @@ export default function Portfolio() {
                 target="_blank"
                 rel="noreferrer"
                 className="group flex items-center gap-3 text-sm"
-                style={{ color: "#D7F7F0" }}
+                style={{ color: "#DCE2DF" }}
               >
                 <span
                   className="rounded-full border p-2 transition-colors group-hover:border-[#B7D86A]"
-                  style={{ borderColor: "rgba(98,245,218,.18)" }}
+                  style={{ borderColor: "#394742" }}
                 >
                   <FaLinkedin size={14} />
                 </span>
