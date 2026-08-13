@@ -252,20 +252,8 @@ function LandmarkMesh({ size = 380, seed = 11 }) {
   });
 
   return (
-    <div className="face-scan-shell relative mx-auto aspect-square w-full max-w-[430px]">
+    <div className="relative mx-auto aspect-square w-full max-w-[430px]">
       <div className="absolute inset-8 rounded-full border border-dashed border-[rgba(98,245,218,.22)]" />
-
-      <div className="face-scan-frame" aria-hidden="true">
-        <span className="scan-corner scan-corner-tl" />
-        <span className="scan-corner scan-corner-tr" />
-        <span className="scan-corner scan-corner-bl" />
-        <span className="scan-corner scan-corner-br" />
-        <span className="face-crosshair face-crosshair-x" />
-        <span className="face-crosshair face-crosshair-y" />
-      </div>
-
-      <div className="face-data-tag face-data-tag-left mono">FACE / VECTOR</div>
-      <div className="face-data-tag face-data-tag-right mono">AI CORE</div>
 
       <svg
         viewBox={`0 0 ${size} ${size}`}
@@ -328,113 +316,6 @@ function LandmarkMesh({ size = 380, seed = 11 }) {
           style={{ color: COLORS.inkSoft }}
         >
           34 LANDMARKS
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-function NeuralNetworkViz() {
-  const layers = [
-    { x: 42, nodes: [42, 92, 142, 192] },
-    { x: 132, nodes: [30, 72, 114, 156, 198] },
-    { x: 222, nodes: [52, 104, 156, 208] },
-    { x: 312, nodes: [82, 132, 182] },
-  ];
-
-  const connections = [];
-
-  layers.slice(0, -1).forEach((layer, layerIndex) => {
-    const next = layers[layerIndex + 1];
-
-    layer.nodes.forEach((y1, nodeIndex) => {
-      next.nodes.forEach((y2, nextIndex) => {
-        if ((nodeIndex + nextIndex + layerIndex) % 2 === 0 || next.nodes.length <= 3) {
-          connections.push({
-            key: `${layerIndex}-${nodeIndex}-${nextIndex}`,
-            x1: layer.x,
-            y1,
-            x2: next.x,
-            y2,
-          });
-        }
-      });
-    });
-  });
-
-  return (
-    <div className="neural-network-shell hud-panel">
-      <div className="neural-network-header">
-        <div>
-          <p className="mono text-[9px] uppercase tracking-[0.22em]" style={{ color: COLORS.teal }}>
-            Neural topology
-          </p>
-          <p className="display mt-2 text-xl font-semibold" style={{ color: COLORS.ink }}>
-            Feature pipeline
-          </p>
-        </div>
-        <span className="ai-chip mono">ML / ACTIVE</span>
-      </div>
-
-      <div className="neural-network-stage">
-        <svg viewBox="0 0 354 240" className="neural-network-svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="networkLine" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={COLORS.blue} stopOpacity="0.12" />
-              <stop offset="50%" stopColor={COLORS.tealBright} stopOpacity="0.62" />
-              <stop offset="100%" stopColor={COLORS.lime} stopOpacity="0.18" />
-            </linearGradient>
-            <filter id="networkGlow">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          <g stroke="url(#networkLine)" strokeWidth="0.8">
-            {connections.map((line) => (
-              <line key={line.key} {...line} className="network-link" />
-            ))}
-          </g>
-
-          {layers.map((layer, layerIndex) => (
-            <g key={layer.x} filter="url(#networkGlow)">
-              {layer.nodes.map((y, nodeIndex) => (
-                <circle
-                  key={`${layer.x}-${y}`}
-                  cx={layer.x}
-                  cy={y}
-                  r={layerIndex === layers.length - 1 ? 4 : 3.2}
-                  fill={layerIndex === layers.length - 1 ? COLORS.lime : COLORS.tealBright}
-                  className="network-node"
-                  style={{ animationDelay: `${(layerIndex * 5 + nodeIndex) * -0.18}s` }}
-                />
-              ))}
-            </g>
-          ))}
-        </svg>
-
-        <div className="network-label network-label-1 mono">INPUT</div>
-        <div className="network-label network-label-2 mono">FEATURES</div>
-        <div className="network-label network-label-3 mono">VECTOR</div>
-        <div className="network-label network-label-4 mono">OUTPUT</div>
-      </div>
-
-      <div className="network-readout-grid">
-        <div>
-          <span className="mono">01</span>
-          <p>Capture & detect</p>
-        </div>
-        <div>
-          <span className="mono">02</span>
-          <p>Extract features</p>
-        </div>
-        <div>
-          <span className="mono">03</span>
-          <p>Compare / predict</p>
         </div>
       </div>
     </div>
@@ -649,37 +530,6 @@ const SKILLS = {
     "REST API design",
   ],
 };
-
-
-const AI_SYSTEMS = [
-  {
-    id: "AI-01",
-    label: "Computer Vision",
-    title: "Facial Recognition",
-    description:
-      "Biometric authentication using facial embeddings and similarity matching as part of the featured full-stack project.",
-    tags: ["InsightFace", "Embeddings", "LFW"],
-    accent: "teal",
-  },
-  {
-    id: "AI-02",
-    label: "Biometric Security",
-    title: "Liveness Detection",
-    description:
-      "Liveness checks integrated into the facial-authentication workflow to strengthen identity verification.",
-    tags: ["MediaPipe", "Computer Vision", "Validation"],
-    accent: "lime",
-  },
-  {
-    id: "ML-01",
-    label: "Machine Learning",
-    title: "Model Benchmarking",
-    description:
-      "Predictive algorithms compared using accuracy, precision and related evaluation metrics to identify stronger models.",
-    tags: ["Python", "Evaluation", "Data Mining"],
-    accent: "blue",
-  },
-];
 
 /* -------------------------------------------------- */
 /* Main Portfolio */
@@ -1015,343 +865,6 @@ export default function Portfolio() {
           15% { opacity: .8; }
           50% { transform: translateY(220px); opacity: .95; }
           85% { opacity: .4; }
-        }
-
-
-        /* Facial recognition HUD */
-        .face-scan-shell {
-          isolation: isolate;
-        }
-
-        .face-scan-frame {
-          position: absolute;
-          inset: 18% 19%;
-          z-index: 3;
-          pointer-events: none;
-          border: 1px solid rgba(98,245,218,.09);
-          background: radial-gradient(circle at center, rgba(98,245,218,.025), transparent 62%);
-          animation: faceFramePulse 3.8s ease-in-out infinite;
-        }
-
-        .scan-corner {
-          position: absolute;
-          width: 24px;
-          height: 24px;
-          border-color: rgba(98,245,218,.95);
-          filter: drop-shadow(0 0 5px rgba(98,245,218,.55));
-        }
-
-        .scan-corner-tl { left: -2px; top: -2px; border-left: 2px solid; border-top: 2px solid; }
-        .scan-corner-tr { right: -2px; top: -2px; border-right: 2px solid; border-top: 2px solid; }
-        .scan-corner-bl { left: -2px; bottom: -2px; border-left: 2px solid; border-bottom: 2px solid; }
-        .scan-corner-br { right: -2px; bottom: -2px; border-right: 2px solid; border-bottom: 2px solid; }
-
-        .face-crosshair {
-          position: absolute;
-          background: rgba(98,245,218,.12);
-        }
-
-        .face-crosshair-x { left: 12%; right: 12%; top: 50%; height: 1px; }
-        .face-crosshair-y { top: 12%; bottom: 12%; left: 50%; width: 1px; }
-
-        .face-data-tag {
-          position: absolute;
-          z-index: 4;
-          top: 14%;
-          padding: 5px 8px;
-          border: 1px solid rgba(98,245,218,.15);
-          background: rgba(3,9,11,.78);
-          color: rgba(174,214,206,.82);
-          font-size: 7px;
-          letter-spacing: .18em;
-          pointer-events: none;
-          backdrop-filter: blur(8px);
-        }
-
-        .face-data-tag-left { left: 4%; }
-        .face-data-tag-right { right: 4%; color: ${COLORS.lime}; }
-
-        @keyframes faceFramePulse {
-          0%,100% { opacity: .6; box-shadow: inset 0 0 30px rgba(55,230,196,.015); }
-          50% { opacity: 1; box-shadow: inset 0 0 45px rgba(55,230,196,.055), 0 0 28px rgba(55,230,196,.045); }
-        }
-
-        .ai-pipeline {
-          display: grid;
-          grid-template-columns: 1fr auto 1fr auto 1fr;
-          gap: 8px;
-          align-items: center;
-          margin-top: 12px;
-          padding: 10px 12px;
-          border: 1px solid rgba(98,245,218,.12);
-          border-radius: 12px;
-          background: rgba(4,12,14,.72);
-          overflow: hidden;
-          position: relative;
-        }
-
-        .ai-pipeline::after {
-          content: "";
-          position: absolute;
-          height: 1px;
-          width: 24%;
-          top: 0;
-          left: -26%;
-          background: linear-gradient(90deg, transparent, ${COLORS.tealBright}, transparent);
-          box-shadow: 0 0 12px rgba(98,245,218,.7);
-          animation: pipelineSweep 4.8s linear infinite;
-        }
-
-        @keyframes pipelineSweep { to { left: 110%; } }
-
-        .ai-pipeline-node {
-          min-width: 0;
-          text-align: center;
-        }
-
-        .ai-pipeline-node span {
-          display: block;
-          color: ${COLORS.tealBright};
-          font-family: "DM Mono", monospace;
-          font-size: 7px;
-          letter-spacing: .14em;
-          text-transform: uppercase;
-        }
-
-        .ai-pipeline-node strong {
-          display: block;
-          margin-top: 3px;
-          color: ${COLORS.ink};
-          font-family: "Space Grotesk", sans-serif;
-          font-size: 10px;
-          font-weight: 600;
-        }
-
-        .pipeline-arrow {
-          color: rgba(98,245,218,.42);
-          font-size: 10px;
-        }
-
-        /* AI / ML showcase */
-        .ai-showcase {
-          position: relative;
-        }
-
-        .ai-showcase::before {
-          content: "AI";
-          position: absolute;
-          right: -1vw;
-          top: -60px;
-          z-index: -1;
-          font-family: "Space Grotesk", sans-serif;
-          font-size: clamp(9rem, 22vw, 18rem);
-          font-weight: 700;
-          line-height: 1;
-          color: rgba(98,245,218,.018);
-          -webkit-text-stroke: 1px rgba(98,245,218,.035);
-          pointer-events: none;
-        }
-
-        .neural-network-shell {
-          position: relative;
-          overflow: hidden;
-          min-height: 100%;
-          border: 1px solid rgba(98,245,218,.18);
-          border-radius: 22px;
-          padding: 24px;
-          background:
-            radial-gradient(circle at 65% 40%, rgba(55,230,196,.08), transparent 30%),
-            linear-gradient(160deg, rgba(10,24,28,.86), rgba(3,9,12,.76));
-          box-shadow: 0 24px 80px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.035);
-        }
-
-        .neural-network-shell::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background-image:
-            linear-gradient(rgba(98,245,218,.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(98,245,218,.025) 1px, transparent 1px);
-          background-size: 28px 28px;
-          mask-image: linear-gradient(to bottom, black, transparent 85%);
-        }
-
-        .neural-network-header {
-          position: relative;
-          z-index: 2;
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 16px;
-        }
-
-        .ai-chip {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          flex-shrink: 0;
-          border: 1px solid rgba(184,255,122,.22);
-          background: rgba(184,255,122,.07);
-          color: ${COLORS.lime};
-          border-radius: 999px;
-          padding: 7px 10px;
-          font-size: 7px;
-          letter-spacing: .14em;
-        }
-
-        .ai-chip::before {
-          content: "";
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: currentColor;
-          box-shadow: 0 0 10px currentColor;
-          animation: pulse 1.8s ease-in-out infinite;
-        }
-
-        .neural-network-stage {
-          position: relative;
-          margin-top: 16px;
-          border: 1px solid rgba(98,245,218,.08);
-          border-radius: 16px;
-          background: rgba(1,7,9,.42);
-          overflow: hidden;
-        }
-
-        .neural-network-svg {
-          display: block;
-          width: 100%;
-          min-height: 260px;
-        }
-
-        .network-link {
-          stroke-dasharray: 5 7;
-          animation: networkFlow 9s linear infinite;
-        }
-
-        @keyframes networkFlow { to { stroke-dashoffset: -80; } }
-
-        .network-node {
-          transform-box: fill-box;
-          transform-origin: center;
-          animation: networkNodePulse 2.8s ease-in-out infinite;
-        }
-
-        @keyframes networkNodePulse {
-          0%,100% { opacity: .42; transform: scale(.82); }
-          50% { opacity: 1; transform: scale(1.18); }
-        }
-
-        .network-label {
-          position: absolute;
-          bottom: 8px;
-          color: rgba(159,192,185,.58);
-          font-size: 6px;
-          letter-spacing: .14em;
-        }
-
-        .network-label-1 { left: 6%; }
-        .network-label-2 { left: 31%; }
-        .network-label-3 { left: 56%; }
-        .network-label-4 { right: 5%; }
-
-        .network-readout-grid {
-          position: relative;
-          z-index: 2;
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0,1fr));
-          margin-top: 12px;
-          border-top: 1px solid rgba(98,245,218,.1);
-          padding-top: 14px;
-        }
-
-        .network-readout-grid > div {
-          padding: 0 12px;
-          border-right: 1px solid rgba(98,245,218,.08);
-        }
-
-        .network-readout-grid > div:first-child { padding-left: 0; }
-        .network-readout-grid > div:last-child { padding-right: 0; border-right: 0; }
-        .network-readout-grid span { color: ${COLORS.teal}; font-size: 8px; }
-        .network-readout-grid p { margin-top: 5px; color: ${COLORS.inkSoft}; font-size: 10px; line-height: 1.45; }
-
-        .ai-system-card {
-          position: relative;
-          overflow: hidden;
-          border: 1px solid rgba(98,245,218,.14);
-          border-radius: 18px;
-          padding: 20px;
-          background: linear-gradient(145deg, rgba(10,22,26,.78), rgba(4,10,13,.72));
-          transition: transform .35s cubic-bezier(.22,1,.36,1), border-color .3s ease, box-shadow .35s ease;
-        }
-
-        .ai-system-card::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          width: 2px;
-          background: var(--ai-accent);
-          box-shadow: 0 0 18px var(--ai-accent);
-          opacity: .65;
-        }
-
-        .ai-system-card:hover {
-          transform: translateX(5px);
-          border-color: rgba(98,245,218,.34);
-          box-shadow: 0 18px 54px rgba(0,0,0,.33), 0 0 30px rgba(55,230,196,.04);
-        }
-
-        .ai-system-index {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          margin-bottom: 12px;
-        }
-
-        .ai-system-index span:first-child {
-          color: var(--ai-accent);
-          font-size: 8px;
-          letter-spacing: .16em;
-        }
-
-        .ai-system-index span:last-child {
-          color: ${COLORS.inkSoft};
-          font-size: 7px;
-          letter-spacing: .12em;
-          text-transform: uppercase;
-        }
-
-        .ai-system-tags {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 7px;
-          margin-top: 15px;
-        }
-
-        .ai-system-tags span {
-          border: 1px solid rgba(98,245,218,.11);
-          border-radius: 999px;
-          padding: 5px 8px;
-          background: rgba(255,255,255,.018);
-          color: rgba(202,230,224,.72);
-          font-family: "DM Mono", monospace;
-          font-size: 7px;
-          letter-spacing: .08em;
-        }
-
-        @media (max-width: 640px) {
-          .face-data-tag { display: none; }
-          .face-scan-frame { inset: 19% 16%; }
-          .ai-pipeline { grid-template-columns: 1fr auto 1fr auto 1fr; gap: 4px; padding: 8px; }
-          .ai-pipeline-node strong { font-size: 8px; }
-          .ai-pipeline-node span { font-size: 6px; }
-          .neural-network-svg { min-height: 220px; }
-          .network-readout-grid { gap: 8px; }
-          .network-readout-grid > div { padding: 0 7px; }
         }
 
         .contact-panel {
@@ -1769,10 +1282,6 @@ export default function Portfolio() {
               Projects
             </a>
 
-            <a href="#ai-ml" className="nav-link">
-              AI / ML
-            </a>
-
             <a href="#skills" className="nav-link">
               Skills
             </a>
@@ -2003,23 +1512,6 @@ export default function Portfolio() {
                     </p>
                   </div>
                 </div>
-
-                <div className="ai-pipeline" aria-label="Facial recognition processing pipeline">
-                  <div className="ai-pipeline-node">
-                    <span>01 / INPUT</span>
-                    <strong>FACE</strong>
-                  </div>
-                  <span className="pipeline-arrow">›</span>
-                  <div className="ai-pipeline-node">
-                    <span>02 / MODEL</span>
-                    <strong>EMBEDDING</strong>
-                  </div>
-                  <span className="pipeline-arrow">›</span>
-                  <div className="ai-pipeline-node">
-                    <span>03 / OUTPUT</span>
-                    <strong>MATCH</strong>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -2075,15 +1567,11 @@ export default function Portfolio() {
             QA AUTOMATION&nbsp;&nbsp;•&nbsp;&nbsp;
             FULL-STACK DEVELOPMENT&nbsp;&nbsp;•&nbsp;&nbsp;
             COMPUTER VISION&nbsp;&nbsp;•&nbsp;&nbsp;
-            FACIAL RECOGNITION&nbsp;&nbsp;•&nbsp;&nbsp;
-            AI / MACHINE LEARNING&nbsp;&nbsp;•&nbsp;&nbsp;
             REST APIs&nbsp;&nbsp;•&nbsp;&nbsp;
             SOFTWARE ENGINEERING&nbsp;&nbsp;•&nbsp;&nbsp;
             QA AUTOMATION&nbsp;&nbsp;•&nbsp;&nbsp;
             FULL-STACK DEVELOPMENT&nbsp;&nbsp;•&nbsp;&nbsp;
             COMPUTER VISION&nbsp;&nbsp;•&nbsp;&nbsp;
-            FACIAL RECOGNITION&nbsp;&nbsp;•&nbsp;&nbsp;
-            AI / MACHINE LEARNING&nbsp;&nbsp;•&nbsp;&nbsp;
             REST APIs&nbsp;&nbsp;•&nbsp;&nbsp;
           </span>
 
@@ -2092,8 +1580,6 @@ export default function Portfolio() {
             QA AUTOMATION&nbsp;&nbsp;•&nbsp;&nbsp;
             FULL-STACK DEVELOPMENT&nbsp;&nbsp;•&nbsp;&nbsp;
             COMPUTER VISION&nbsp;&nbsp;•&nbsp;&nbsp;
-            FACIAL RECOGNITION&nbsp;&nbsp;•&nbsp;&nbsp;
-            AI / MACHINE LEARNING&nbsp;&nbsp;•&nbsp;&nbsp;
             REST APIs&nbsp;&nbsp;•&nbsp;&nbsp;
           </span>
         </div>
@@ -2374,73 +1860,6 @@ export default function Portfolio() {
         </div>
       </section>
 
-
-      {/* -------------------------------------------------- */}
-      {/* AI / MACHINE LEARNING */}
-      {/* -------------------------------------------------- */}
-
-      <section
-        id="ai-ml"
-        className="ai-showcase relative z-10 mx-auto max-w-6xl px-6 py-24 md:px-8 md:py-32"
-      >
-        <SectionLabel
-          number="03 / AI + MACHINE LEARNING"
-          title="Intelligence in the stack."
-          description="Computer-vision and machine-learning work represented as interactive system visuals, grounded in the projects featured in this portfolio."
-        />
-
-        <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-          <Reveal>
-            <NeuralNetworkViz />
-          </Reveal>
-
-          <div className="grid gap-4">
-            {AI_SYSTEMS.map((system, index) => {
-              const accent =
-                system.accent === "lime"
-                  ? COLORS.lime
-                  : system.accent === "blue"
-                    ? COLORS.blue
-                    : COLORS.tealBright;
-
-              return (
-                <Reveal key={system.id} delay={index * 90}>
-                  <article
-                    className="ai-system-card"
-                    style={{ "--ai-accent": accent }}
-                  >
-                    <div className="ai-system-index mono">
-                      <span>{system.id}</span>
-                      <span>{system.label}</span>
-                    </div>
-
-                    <h3
-                      className="display text-xl font-semibold"
-                      style={{ color: COLORS.ink }}
-                    >
-                      {system.title}
-                    </h3>
-
-                    <p
-                      className="body-font mt-3 text-sm leading-6"
-                      style={{ color: COLORS.inkSoft }}
-                    >
-                      {system.description}
-                    </p>
-
-                    <div className="ai-system-tags">
-                      {system.tags.map((tag) => (
-                        <span key={tag}>{tag}</span>
-                      ))}
-                    </div>
-                  </article>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* -------------------------------------------------- */}
       {/* SKILLS */}
       {/* -------------------------------------------------- */}
@@ -2450,7 +1869,7 @@ export default function Portfolio() {
         className="relative z-10 mx-auto max-w-6xl px-6 py-24 md:px-8 md:py-32"
       >
         <SectionLabel
-          number="04 / TOOLKIT"
+          number="03 / TOOLKIT"
           title="What I work with."
           description="A practical stack built through coursework, projects, internship experience and independent development."
         />
@@ -2593,7 +2012,7 @@ export default function Portfolio() {
                 className="mono text-[10px] uppercase tracking-[0.25em]"
                 style={{ color: COLORS.lime }}
               >
-                05 / CONTACT
+                04 / CONTACT
               </p>
 
               <h2
