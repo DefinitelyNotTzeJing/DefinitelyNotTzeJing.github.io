@@ -116,7 +116,7 @@ contactForm.onsubmit = (event) => {
     );
 
     window.location.href =
-        `mailto:your@email.com?subject=${subject}&body=${body}`;
+        `mailto:vfdelarosa15@gmail.com?subject=${subject}&body=${body}`;
 
     document.querySelector("#status").textContent =
         "OPENING YOUR EMAIL APP...";
