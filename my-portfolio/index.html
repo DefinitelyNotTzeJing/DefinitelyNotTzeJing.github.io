@@ -1,13 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>my-portfolio</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jayson Dela Rosa — Animation & Game Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header"><a class="logo" href="#home">VIC JAYSON F. DELA ROSA<span>.</span></a><button id="menuBtn">☰</button>
+<nav id="nav"><a href="#work">WORK</a><a href="#experience">EXPERIENCE</a><a href="#about">ABOUT</a><a href="#contact">CONTACT</a></nav></header>
+<main>
+<section class="hero" id="home"><div><p class="eyebrow">ANIMATION & GAME DEVELOPMENT</p><h1>Vic Jayson F.<br>Dela Rosa</h1><p class="intro">I create games, 3D assets, animations, and interactive experiences by combining creative design with programming.</p><a class="btn" href="#work">VIEW WORK <b>→</b></a></div>
+<div class="pixel-visual"><div class="scene"><div class="sun"></div><div class="mountain a"></div><div class="mountain b"></div><div class="ground"></div><div class="person"><i class="head"></i><i class="body"></i><i class="leg l"></i><i class="leg r"></i></div></div><p>CREATIVE / TECHNICAL</p></div></section>
+
+<section class="section" id="work"><div class="title"><span>01 / SELECTED WORK</span><h2>Projects</h2></div><div class="projects">
+<article><small>01</small><div><h3>Babylon: Fable That Flows Into the Infinite </h3><p>A 3D RPG Exploring Consiquences of War</p><em>Unity · C# · Maya</em></div><button class="open" data-id="Babylon">↗</button></article>
+<article><small>02</small><div><h3>Tammy Quiz Rush: Design Thinking</h3><p>A 2D Quiz game for Design Thinking Subjects</p><em>Unity · C#</em></div><button class="open" data-id="modeling">↗</button></article>
+<article><small>03</small><div><h3>Tammy Quiz Rush: SGD Quest</h3><p>An 2D Quiz game about Sustainable development goals</p><em>C# · Unity</em></div><button class="open" data-id="animation">↗</button></article>
+</div></section>
+
+<section class="section" id="experience"><div class="title"><span>02 / EXPERIENCE</span><h2>Experience</h2></div><div class="timeline">
+<article><time>Jan. 2026 - March 2026</time><div><h3>Internship 2 (Developer)</h3><strong>FEUTECH Innovation Center</strong><p>Game Developer of Tammy Quiz Rush: SDG Quest<br>UI/UX Designer of  Tammy Quiz Rush: SDG Quest</p></div></article>
+<article><time>Sept. 2025 - Nov. 2025</time><div><h3>Internship 1 (Operations & Developer)</h3><strong>FEUTECH Innovation Center</strong><p>Organizer of Unmasked: Visionaries who build Impact<br>Organizer of TechX: Human side of Fintech<br>Organizer of PH Start up week 2025<br>Contribution of Offline leaderboard featured develop on Tammy Quiz Rush: Design Thinkin</p></div></article>
+</div></section>
+
+<section class="section split" id="about"><div class="title"><span>03 / ABOUT</span><h2>About me</h2></div><div><p class="large">I'm an Animation and Game Development student interested in game development, 3D modeling, animation, and interactive experiences.</p><p class="muted">I enjoy combining technical programming with creative design to turn ideas into playable worlds, assets, and digital experiences.</p>
+<div class="skills"><div><h4>GAME DEVELOPMENT</h4><p>Unity<br>C#</div><div><h4>3D & ANIMATION</h4><p>Maya<br>3D Modeling<br>Animation</p></div><div><h4>TOOLS</h4><p>Git<br>GitHub<br>Visual Studio Code</p></div></div></div></section>
+
+<section class="section split" id="contact"><div class="title"><span>04 / CONTACT</span><h2>Let's work<br>together.</h2></div><div><p class="muted">Have a project, opportunity, or just want to get in touch?</p>
+<form id="contactForm"><label>NAME<input required name="name" placeholder="Your name"></label><label>EMAIL<input required type="email" name="email" placeholder="you@example.com"></label><label>MESSAGE<textarea required name="message" rows="5" placeholder="Tell me about it..."></textarea></label><button class="btn" type="submit">SEND MESSAGE <b>→</b></button><p id="status"></p></form>
+<div class="socials"><a href="https://github.com/Nanashi1215">GitHub ↗</a><a href="https://www.linkedin.com/in/vic-jayson-dela-rosa-59988a388/">LinkedIn ↗</a></div></div></section>
+</main>
+<footer><span>© 2026 Vic Jayson F. Dela Rosa</span><span>BUILT WITH HTML/CSS<b>■</b></span></footer>
+
+<div class="modal" id="modal"><div class="modalbox"><button id="close">×</button><p class="eyebrow" id="mcat"></p><h2 id="mtitle"></h2><p id="mdesc"></p><strong id="mtools"></strong><div class="placeholder">PROJECT<br>IMAGE</div><a href="#">PLAY / DEMO ↗</a> &nbsp;&nbsp; <a href="#">GITHUB ↗</a></div></div>
+<script src="script.js"></script>
+</body></html>
